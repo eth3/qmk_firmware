@@ -41,6 +41,13 @@ uint8_t ps2_mouse_init(void) {
 
     _delay_ms(1000);    // wait for powering up
 
+    //trackpoint reset
+    DDRB |= (1 << 3);
+    PORTB |= (1 << 3);
+    _delay_ms(150);
+    PORTB &= ~(1 << 3);
+    #pragma message "stuff"
+
     // send Reset
     rcv = ps2_host_send(0xFF);
     print("ps2_mouse_init: send Reset: ");
@@ -61,11 +68,40 @@ uint8_t ps2_mouse_init(void) {
     print("ps2_mouse_init: send 0xF0: ");
     phex(rcv); phex(ps2_error); print("\n");
 
+    //start TP config
+    // sensitivity
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x81);
+    rcv = ps2_host_send(0x4A);
+    rcv = ps2_host_send(0xFF);
+
+    // speed (transfer function upper plateau speed)
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x81);
+    rcv = ps2_host_send(0x60);
+    rcv = ps2_host_send(0xFF);
+
+    //inverting x-axis
+    //E2 81 2C 10 - swap y
+    //E2 81 2C 08 - swap x
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x81);
+    rcv = ps2_host_send(0x2C);
+    rcv = ps2_host_send(0x08);
+
+    /* enable press-to-select - not achievable if trackpoint buttons are not soldered
+    rcv = ps2_host_send(0xE2);
+    rcv = ps2_host_send(0x47);
+    rcv = ps2_host_send(0x2C);
+    rcv = ps2_host_send(0x01);*/
+
+    //end TP config
+
     return 0;
 }
 
 #define X_IS_NEG  (mouse_report.buttons & (1<<PS2_MOUSE_X_SIGN))
-#define Y_IS_NEG  (mouse_report.buttons & (1<<PS2_MOUSE_Y_SIGN))
+#define Y_IS_NEG  (mouse_report.buttons & (1<<PS2_MOUSE_Y_SIGN)) 
 #define X_IS_OVF  (mouse_report.buttons & (1<<PS2_MOUSE_X_OVFLW))
 #define Y_IS_OVF  (mouse_report.buttons & (1<<PS2_MOUSE_Y_OVFLW))
 void ps2_mouse_task(void)
@@ -79,8 +115,9 @@ void ps2_mouse_task(void)
     rcv = ps2_host_send(PS2_MOUSE_READ_DATA);
     if (rcv == PS2_ACK) {
         mouse_report.buttons = ps2_host_recv_response();
+        mouse_report.y = ps2_host_recv_response();  //swapped
         mouse_report.x = ps2_host_recv_response();
-        mouse_report.y = ps2_host_recv_response();
+        mouse_report.buttons = (mouse_report.buttons & (~7))+get_mouse_btns();
     } else {
         if (debug_mouse) print("ps2_mouse: fail to get mouse packet\n");
         return;

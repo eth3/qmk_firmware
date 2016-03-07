@@ -145,6 +145,12 @@ BACKLIGHT_ENABLE = yes  # Enable keyboard backlight functionality
 # BLUETOOTH_ENABLE = yes # Enable Bluetooth with the Adafruit EZ-Key HID
 # RGBLIGHT_ENABLE = yes # Enable WS2812 RGB underlight.  Do not enable this with MIDI at the same time.
 
+PS2_MOUSE_ENABLE = yes	# PS/2 mouse(TrackPoint) support
+PS2_USE_BUSYWAIT = yes # uses primitive reference code
+#TP_INVERTX = yes  # Invert original x axis
+#TP_INVERTY = no   # Invert original y axis
+#TP_SWAPXY = yes   # Swap X and Y axes
+
 ifdef BACKLIGHT_ENABLE
 	SRC += backlight.c
 endif

@@ -34,10 +34,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define PS2_MOUSE_BTN_LEFT      0
 #define PS2_MOUSE_BTN_RIGHT     1
 #define PS2_MOUSE_BTN_MIDDLE    2
-#define PS2_MOUSE_X_SIGN        4
-#define PS2_MOUSE_Y_SIGN        5
-#define PS2_MOUSE_X_OVFLW       6
-#define PS2_MOUSE_Y_OVFLW       7
+#define PS2_MOUSE_X_SIGN        5
+#define PS2_MOUSE_Y_SIGN        4
+#define PS2_MOUSE_X_OVFLW       7
+#define PS2_MOUSE_Y_OVFLW       6
 
 
 /*

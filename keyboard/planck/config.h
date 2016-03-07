@@ -58,14 +58,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     keyboard_report->mods == (MOD_BIT(KC_LSHIFT) | MOD_BIT(KC_RSHIFT)) \
 )
 
-/* ws2812 RGB LED */
-#define ws2812_PORTREG  PORTD
-#define ws2812_DDRREG   DDRD
-#define ws2812_pin PD1
-#define RGBLED_NUM 28     // Number of LEDs
-#define RGBLIGHT_HUE_STEP 10
-#define RGBLIGHT_SAT_STEP 17
-#define RGBLIGHT_VAL_STEP 17
+#ifdef PS2_USE_BUSYWAIT
+#   define PS2_CLOCK_PORT  PORTB
+#   define PS2_CLOCK_PIN   PINB
+#   define PS2_CLOCK_DDR   DDRB
+#   define PS2_CLOCK_BIT   1
+#   define PS2_DATA_PORT   PORTB
+#   define PS2_DATA_PIN    PINB
+#   define PS2_DATA_DDR    DDRB
+#   define PS2_DATA_BIT    2
+#endif
+
 
 /*
  * Feature disable options
